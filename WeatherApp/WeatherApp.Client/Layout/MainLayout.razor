@@ -1,0 +1,185 @@
+﻿@inherits LayoutComponentBase
+@using WeatherApp.Client.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject FavoritesService FavoritesService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+<MudThemeProvider Theme="_myTheme" @bind-IsDarkMode="isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="2" Color="Color.Primary">
+        <MudText Typo="Typo.h6" Style="color:white;">
+            🌤 Weather App
+        </MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.End"
+                       OnClick="ToggleDrawer"
+                       Style="color:white;" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="drawerOpen"
+               Anchor="Anchor.End"
+               Elevation="2"
+               Variant="DrawerVariant.Temporary"
+               ClipMode="DrawerClipMode.Always">
+
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Menu</MudText>
+        </MudDrawerHeader>
+
+        <MudNavMenu>
+            @if (AuthService.IsLoggedIn())
+            {
+                <div class="px-4 py-2">
+                    <MudText Typo="Typo.caption" Style="color:gray;">Logged in as</MudText>
+                    <MudText Typo="Typo.body2" Style="word-break:break-all;">
+                        @AuthService.GetCurrentUserEmail()
+                    </MudText>
+                </div>
+
+                <MudDivider Class="my-2" />
+
+                <div class="px-4 py-2">
+                    <MudText Typo="Typo.caption" Style="color:gray;">Favorite Weather</MudText>
+                    <MudSelect T="string"
+                               Value="favoriteWeather"
+                               Variant="Variant.Outlined"
+                               Dense="true"
+                               Class="mt-1"
+                               ValueChanged="SaveFavoriteWeather">
+                        <MudSelectItem Value="@("Clear")">☀️ Clear</MudSelectItem>
+                        <MudSelectItem Value="@("Clouds")">☁️ Clouds</MudSelectItem>
+                        <MudSelectItem Value="@("Rain")">🌧 Rain</MudSelectItem>
+                        <MudSelectItem Value="@("Thunderstorm")">⛈ Thunderstorm</MudSelectItem>
+                        <MudSelectItem Value="@("Snow")">❄️ Snow</MudSelectItem>
+                        <MudSelectItem Value="@("Mist")">🌫 Mist</MudSelectItem>
+                    </MudSelect>
+                </div>
+
+                <MudDivider Class="my-2" />
+
+                <MudNavLink Icon="@Icons.Material.Filled.Logout"
+                            OnClick="HandleLogout">
+                    Logout
+                </MudNavLink>
+            }
+            else
+            {
+                <MudNavLink Icon="@Icons.Material.Filled.Login"
+                            OnClick='() => Navigation.NavigateTo("/login")'>
+                    Login
+                </MudNavLink>
+            }
+
+            <MudDivider Class="my-2" />
+
+            <div class="px-4 py-2 d-flex align-center justify-space-between">
+                <div class="d-flex align-center gap-2">
+                    <MudIcon Icon="@(isDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.DarkMode)"
+                             Size="Size.Small" />
+                    <MudText Typo="Typo.body2">
+                        @(isDarkMode ? "Light Mode" : "Dark Mode")
+                    </MudText>
+                </div>
+                
+                <MudSwitch T="bool"
+                           Value="isDarkMode"
+                           ValueChanged="OnDarkModeChanged"
+                           Color="Color.Primary"
+                           Size="Size.Small" />
+
+            </div>
+
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        <CascadingValue Value="this">
+            @Body
+        </CascadingValue>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+
+    bool isDarkMode = false;
+    bool drawerOpen = false;
+    string favoriteWeather = "";
+
+    MudTheme _myTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#1565C0",
+            Secondary = "#FF8F00",
+            AppbarBackground = "#0D47A1",
+            Background = "#F0F4F8",
+            Surface = "#FFFFFF",
+            TextPrimary = "#1A237E",
+        }
+    };
+
+    async Task ToggleDrawer()
+    {
+        drawerOpen = !drawerOpen;
+        if (drawerOpen && AuthService.IsLoggedIn())
+        {
+            favoriteWeather = await FavoritesService.GetFavoriteWeather() ?? "";
+        }
+    }
+
+    public async Task ToggleDarkMode()
+    {
+        isDarkMode = !isDarkMode;
+        await LocalStorage.SetItemAsync("darkMode", isDarkMode);
+        StateHasChanged();
+    }
+
+    async Task SaveFavoriteWeather(string condition)
+    {
+        favoriteWeather = condition;
+        await FavoritesService.SaveFavoriteWeather(condition);
+        Snackbar.Add($"Favorite weather set to {condition}!", Severity.Success);
+    }
+
+    public event Action? OnLogout;
+
+    async Task HandleLogout()
+    {
+        await AuthService.SignOut();
+        drawerOpen = false;
+        favoriteWeather = "";
+        Snackbar.Add("Logged out successfully!", Severity.Info);
+        OnLogout?.Invoke();
+        Navigation.NavigateTo("/");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isDarkMode = await LocalStorage.GetItemAsync<bool>("darkMode");
+            StateHasChanged();
+        }
+    }
+
+    async Task OnDarkModeChanged(bool val)
+    {
+        isDarkMode = val;
+        await LocalStorage.SetItemAsync("darkMode", val);
+        StateHasChanged();
+    }
+}

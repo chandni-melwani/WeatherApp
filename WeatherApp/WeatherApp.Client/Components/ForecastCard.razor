@@ -1,0 +1,37 @@
+﻿@namespace WeatherApp.Client.Components
+@using WeatherApp.Client.Models
+@using MudBlazor
+
+@if (Forecast != null)
+{
+    <MudPaper Elevation="2"
+              Class="pa-4 rounded-xl"
+              Style=@($"background:{WeatherHelper.GetGradient(Forecast.Condition)}; color:white; border-radius:16px; transition:all 0.3s ease; height:100%;")>
+
+        <MudText Typo="Typo.caption" Style="color:rgba(255,255,255,0.75);">
+            @Forecast.Date.ToString("ddd, MMM dd")
+        </MudText>
+
+        <MudText Style="font-size:32px; line-height:1; margin:8px 0;">
+            @WeatherHelper.GetWeatherIcon(Forecast.Condition)
+        </MudText>
+
+        <MudText Typo="Typo.h6" Style="color:white; font-weight:700;">
+            @Forecast.Temperature°C
+        </MudText>
+        <MudText Typo="Typo.caption" Style="color:rgba(255,255,255,0.8);">
+            ↑ @Forecast.TempMax°C  ↓ @Forecast.TempMin°C
+        </MudText>
+
+        <MudText Typo="Typo.body2" Style="color:rgba(255,255,255,0.85);">
+            @Forecast.Condition
+        </MudText>
+
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public ForecastModel? Forecast { get; set; }
+
+}

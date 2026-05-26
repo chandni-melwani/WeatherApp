@@ -1,0 +1,66 @@
+﻿@namespace WeatherApp.Client.Components
+@using WeatherApp.Client.Models
+@using MudBlazor
+
+@if (Weather != null)
+{
+    <MudPaper Elevation="4"
+              Class="pa-6 rounded-xl"
+              Style=@($"background: {WeatherHelper.GetGradient(Weather.Condition)}; color:white; border-radius:16px; transition:all 0.3s ease;")>
+
+        <div class="d-flex justify-space-between align-center mb-2">
+            <div>
+                <MudText Typo="Typo.h5" Style="color:white; font-weight:700;">
+                    @Weather.City
+                </MudText>
+                <MudText Typo="Typo.caption" Style="color:rgba(255,255,255,0.8);">
+                    @Weather.Country
+                </MudText>
+            </div>
+            <MudText Style="font-size:48px;">
+                @WeatherHelper.GetWeatherIcon(Weather.Condition)
+            </MudText>
+        </div>
+
+        <MudText Typo="Typo.h3" Style="color:white; font-weight:300; margin-bottom:4px;">
+            @Weather.Temperature°C
+        </MudText>
+        <MudText Typo="Typo.body2" Style="color:rgba(255,255,255,0.8); margin-bottom:4px;">
+            ↑ @Weather.TempMax°C  ↓ @Weather.TempMin°C
+        </MudText>
+
+        <MudText Typo="Typo.body1" Style="color:rgba(255,255,255,0.9); margin-bottom:16px;">
+            @Weather.Condition
+        </MudText>
+
+        <MudDivider Style="background:rgba(255,255,255,0.3); margin-bottom:12px;" />
+
+        <div class="d-flex gap-4">
+            <div class="text-center">
+                <MudText Typo="Typo.caption" Style="color:rgba(255,255,255,0.7);">Humidity</MudText>
+                <MudText Style="color:white; font-weight:600;">@Weather.Humidity%</MudText>
+            </div>
+            <div class="text-center">
+                <MudText Typo="Typo.caption" Style="color:rgba(255,255,255,0.7);">Wind</MudText>
+                <MudText Style="color:white; font-weight:600;">@Weather.WindSpeed km/h</MudText>
+            </div>
+        </div>
+
+        <MudButton Variant="Variant.Filled"
+                   Style="background:rgba(255,255,255,0.25); color:white; margin-top:16px; width:100%;"
+                   OnClick="@AddFavorite">
+            ⭐ Add To Favorites
+        </MudButton>
+
+    </MudPaper>
+}
+
+@code {
+    [Parameter]
+    public WeatherModel? Weather { get; set; }
+
+    [Parameter]
+    public EventCallback AddFavorite { get; set; }
+
+    
+}
