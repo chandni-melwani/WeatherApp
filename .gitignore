@@ -480,3 +480,8 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Sensitive configuration files
+**/appsettings.Development.json
+WeatherApp/appsettings.json
+WeatherApp.Client/Helpers/AppConstants.cs
