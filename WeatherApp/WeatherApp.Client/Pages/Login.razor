@@ -4,18 +4,17 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 
-<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="mt-16">
-    <MudPaper Elevation="8" Class="rounded-xl overflow-hidden" Style="border-radius:20px;">
-
-        <div Style="background: linear-gradient(135deg, #1565C0, #1976D2); padding: 32px; text-align:center;">
+<MudContainer MaxWidth="MaxWidth.Small" Style="padding-top:60px; padding-bottom:40px;">
+    <MudPaper Elevation="8" Class="rounded-xl overflow-hidden" Style="border-radius:20px; width:100%;">
+        <div Style="background: @GetHeaderGradient(); padding: 40px 32px; text-align:center; transition: background 1s ease;">
             <MudText Style="font-size:48px;">
-                @(isSignUp ? "📝" : "🌤")
+                @(isSignUp ? "📝" : GetTimeEmoji())
             </MudText>
             <MudText Typo="Typo.h5" Style="color:white; font-weight:700; margin-top:8px;">
-                @(isSignUp ? "Create Account" : "Welcome Back")
+                @(isSignUp ? "Create Account" : GetGreeting())
             </MudText>
             <MudText Typo="Typo.body2" Style="color:rgba(255,255,255,0.8);">
-                @(isSignUp ? "Join to save your favourite cities" : "Sign in to your weather account")
+                @(isSignUp ? "Join to save your favourite cities" : GetSubtitle())
             </MudText>
         </div>
 
@@ -40,7 +39,7 @@
                           Variant="Variant.Outlined"
                           Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Email"
-                          Class="mb-3"
+                          Class="mb-4"
                           FullWidth="true" />
 
             <MudTextField Label="Password"
@@ -50,7 +49,7 @@
                           Adornment="Adornment.End"
                           AdornmentIcon="@(showPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
                           OnAdornmentClick="() => showPassword = !showPassword"
-                          Class="mb-4"
+                          Class="mb-6"
                           FullWidth="true" />
 
             <MudButton Variant="Variant.Filled"
@@ -161,4 +160,53 @@
             isLoading = false;
         }
     }
+
+    string GetGreeting()
+    {
+        var hour = DateTime.Now.Hour;
+        return hour switch
+        {
+            >= 5 and < 12 => "Good Morning!",
+            >= 12 and < 17 => "Good Afternoon!",
+            >= 17 and < 20 => "Good Evening!",
+            _ => "Good Night!"
+        };
+    }
+
+    string GetSubtitle()
+    {
+        var hour = DateTime.Now.Hour;
+        return hour switch
+        {
+            >= 5 and < 12 => "Start your day with the weather",
+            >= 12 and < 17 => "Check the afternoon forecast",
+            >= 17 and < 20 => "Plan your evening ahead",
+            _ => "Check tomorrow's weather"
+        };
+    }
+
+    string GetTimeEmoji()
+    {
+        var hour = DateTime.Now.Hour;
+        return hour switch
+        {
+            >= 5 and < 12 => "🌅",
+            >= 12 and < 17 => "☀️",
+            >= 17 and < 20 => "🌆",
+            _ => "🌙"
+        };
+    }
+
+    string GetHeaderGradient()
+    {
+        var hour = DateTime.Now.Hour;
+        return hour switch
+        {
+            >= 5 and < 12 => "linear-gradient(135deg, #1565C0, #42A5F5)",
+            >= 12 and < 17 => "linear-gradient(135deg, #0277BD, #0288D1)",
+            >= 17 and < 20 => "linear-gradient(135deg, #1565C0, #5C6BC0)",
+            _ => "linear-gradient(135deg, #0D47A1, #1A237E)"
+        };
+    }
+
 }

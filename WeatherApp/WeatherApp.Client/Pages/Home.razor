@@ -7,129 +7,125 @@
 @inject WeatherService WeatherService
 @inject ISnackbar Snackbar
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+<div style="min-height:100vh; transition: background 1s ease; background: @GetPageBackground();">
+    <MudContainer MaxWidth="MaxWidth.Medium" Class="pt-6 pb-6">
+        <MudPaper Elevation="0"
+                  Class="pa-6"
+                  Style="background:transparent;">
 
-    <MudPaper Elevation="6"
-              Class="pa-6 rounded-xl"
-              Style="transition:all 0.3s ease; border-radius:20px;">
-
-        <MudText Typo="Typo.h4" Class="mb-4"
-                 Style="font-size: clamp(1.5rem, 5vw, 2.5rem);">
-            Weather App
-        </MudText>
-
-        <MudTextField Label="Enter City"
-                      @bind-Value="cityName"
-                      Variant="Variant.Outlined"
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      Class="mt-4 mb-4" />
-
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   Class="mt-4 mb-4"
-                   FullWidth="true"
-                   StartIcon="@Icons.Material.Filled.WbSunny"
-                   OnClick="GetWeather">
-            Get Weather
-        </MudButton>
-
-        @if (isLoading)
-        {
-            <MudProgressCircular Color="Color.Primary"
-                                 Indeterminate="true"
-                                 Class="mt-4" />
-        }
-
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <MudAlert Severity="Severity.Error"
-                      Class="mt-4">
-                @errorMessage
-            </MudAlert>
-        }
-
-        @if (showWeather && weather != null)
-        {
-            <WeatherCard Weather="weather"
-                         AddFavorite="AddFavorite" />
-        }
-
-        @if (forecasts.Count > 0)
-        {
-            <MudText Typo="Typo.h5" Class="mt-6 mb-4">
-                5-Day Forecast
-            </MudText>
-        }
-
-        <MudGrid Spacing="3" Justify="Justify.FlexStart">
-            @foreach (var item in forecasts)
+            @if (weather == null && !isLoading)
             {
-                <MudItem xs="6" sm="4" md="4">
-                    <ForecastCard Forecast="item" />
-                </MudItem>
+                <div class="text-center py-6">
+                    <MudText Style="font-size:72px; line-height:1;">🌤</MudText>
+                    <MudText Typo="Typo.h4" Class="mt-3" Style="font-weight:700;">
+                        Weather App
+                    </MudText>
+                    <MudText Typo="Typo.body1" Class="mt-2" Style="color:#546E7A;">
+                        Enter a place name below to get started
+                    </MudText>
+                </div>
             }
-        </MudGrid>
 
-        @if (AuthService.IsLoggedIn())
-        {
+            <MudTextField Label="Enter Place"
+                          @bind-Value="cityName"
+                          Variant="Variant.Outlined"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Class="mt-4 mb-4"
+                          Style="font-size:1.1rem;"
+                          FullWidth="true" />
 
-            <MudText Typo="Typo.h5" Class="mt-6 mb-3">
-                Favorite Cities
-            </MudText>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Class="mb-4"
+                       FullWidth="true"
+                       StartIcon="@Icons.Material.Filled.WbSunny"
+                       OnClick="GetWeather">
+                Get Weather
+            </MudButton>
 
-            <div class="d-flex flex-wrap gap-2">
+            @if (isLoading)
+            {
+                <MudProgressCircular Color="Color.Primary"
+                                     Indeterminate="true"
+                                     Class="mt-4" />
+            }
 
-                @foreach (var city in favoriteCities)
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-4">
+                    @errorMessage
+                </MudAlert>
+            }
+
+            @if (showWeather && weather != null)
+            {
+                <WeatherCard Weather="weather"
+                             AddFavorite="AddFavorite" />
+            }
+
+            @if (forecasts.Count > 0)
+            {
+                <MudText Typo="Typo.h5" Class="mt-6 mb-4">
+                    5-Day Forecast
+                </MudText>
+            }
+
+            <MudGrid Spacing="3" Justify="Justify.FlexStart">
+                @foreach (var item in forecasts)
+                {
+                    <MudItem xs="6" sm="4" md="4">
+                        <ForecastCard Forecast="item" />
+                    </MudItem>
+                }
+            </MudGrid>
+
+            @if (AuthService.IsLoggedIn())
+            {
+                <MudText Typo="Typo.h5" Class="mt-6 mb-3">
+                    Favorite Cities
+                </MudText>
+
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var city in favoriteCities)
+                    {
+                        <MudChip T="string"
+                                 Color="Color.Primary"
+                                 Variant="Variant.Filled">
+                            <span @onclick='() => LoadCity(city)'
+                                  style="cursor:pointer">
+                                ⭐ @city
+                            </span>
+                            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                           Size="Size.Small"
+                                           OnClick='() => RemoveFavorite(city)' />
+                        </MudChip>
+                    }
+                </div>
+            }
+
+            @if (searchHistory.Count > 0)
+            {
+                <MudText Typo="Typo.h6" Class="mt-6 mb-2">
+                    Recent Searches
+                </MudText>
+            }
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                @foreach (var city in searchHistory)
                 {
                     <MudChip T="string"
                              Color="Color.Primary"
-                             Variant="Variant.Filled">
-
-                        <span @onclick='() => LoadCity(city)'
-                              style="cursor:pointer">
-
-                            ⭐ @city
-
-                        </span>
-
-                        <MudIconButton Icon="@Icons.Material.Filled.Close"
-                                       Size="Size.Small"
-                                       OnClick='() => RemoveFavorite(city)' />
-
+                             Variant="Variant.Filled"
+                             @onclick='() => LoadCity(city)'>
+                        @city
                     </MudChip>
                 }
-
             </div>
 
-        }
-
-        @if (searchHistory.Count > 0)
-        {
-            <MudText Typo="Typo.h6" Class="mt-6 mb-2">
-                Recent Searches
-            </MudText>
-        }
-
-        <div class="d-flex flex-wrap gap-2 mb-4">
-
-            @foreach (var city in searchHistory)
-            {
-                <MudChip T="string"
-                         Color="Color.Primary"
-                         Variant="Variant.Filled"
-                         @onclick='() => LoadCity(city)'>
-
-                    @city
-
-                </MudChip>
-            }
-
-        </div>
-
-    </MudPaper>
-
-</MudContainer>
+        </MudPaper>
+    </MudContainer>
+</div>
 
 @code {
 
@@ -141,6 +137,7 @@
     List<ForecastModel> forecasts = new();
     List<string> searchHistory = new();
     List<string> favoriteCities = new();
+    bool isDarkMode => AppLayout?.IsDarkMode ?? false;
 
     [CascadingParameter]
     public MainLayout? AppLayout { get; set; }
@@ -187,7 +184,7 @@
         }
         catch (HttpRequestException)
         {
-            errorMessage = "City not found. Please enter a valid city name.";
+            errorMessage = "Place not found. Please enter a valid place name.";
             weather = null;
             forecasts.Clear();
             showWeather = false;
@@ -278,5 +275,26 @@
                 StateHasChanged();
             }
         }
+    }
+
+    string GetPageBackground()
+    {
+        if (weather == null)
+            return isDarkMode
+                ? "linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)"
+                : "#F0F4F8";
+
+        return weather.Condition switch
+        {
+            "Clear" => "linear-gradient(180deg, #FFF9C4 0%, #FFE082 50%, #FFB300 100%)",
+            "Clouds" => isDarkMode
+                           ? "linear-gradient(180deg, #2c3e50 0%, #3d5166 100%)"
+                           : "linear-gradient(180deg, #ECEFF1 0%, #B0BEC5 100%)",
+            "Rain" => "linear-gradient(180deg, #1A237E 0%, #1565C0 100%)",
+            "Thunderstorm" => "linear-gradient(180deg, #1A0A2E 0%, #4A148C 100%)",
+            "Snow" => "linear-gradient(180deg, #E3F2FD 0%, #FFFFFF 100%)",
+            "Mist" => "linear-gradient(180deg, #CFD8DC 0%, #90A4AE 100%)",
+            _ => "linear-gradient(180deg, #E3F2FD 0%, #BBDEFB 100%)"
+        };
     }
 }

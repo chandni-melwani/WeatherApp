@@ -28,10 +28,11 @@
                Anchor="Anchor.End"
                Elevation="2"
                Variant="DrawerVariant.Temporary"
-               ClipMode="DrawerClipMode.Always">
+               ClipMode="DrawerClipMode.Always"
+               Width="320px">
 
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Menu</MudText>
+        <MudDrawerHeader Style="padding: 24px;">
+            <MudText Typo="Typo.h4" Style="font-weight:700;">Menu</MudText>
         </MudDrawerHeader>
 
         <MudNavMenu>
@@ -73,28 +74,26 @@
             else
             {
                 <MudNavLink Icon="@Icons.Material.Filled.Login"
-                            OnClick='() => Navigation.NavigateTo("/login")'>
+                            OnClick='() => Navigation.NavigateTo("/login")'
+                            Style="font-size:1.1rem;">
                     Login
                 </MudNavLink>
             }
 
             <MudDivider Class="my-2" />
 
-            <div class="px-4 py-2 d-flex align-center justify-space-between">
-                <div class="d-flex align-center gap-2">
+            <div class="px-4 py-4 d-flex align-center justify-space-between">
+                <div class="d-flex align-center gap-3">
                     <MudIcon Icon="@(isDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.DarkMode)"
-                             Size="Size.Small" />
-                    <MudText Typo="Typo.body2">
+                             Size="Size.Medium" />
+                    <MudText Typo="Typo.body1" Style="font-size:1.2rem;">
                         @(isDarkMode ? "Light Mode" : "Dark Mode")
                     </MudText>
                 </div>
-                
                 <MudSwitch T="bool"
                            Value="isDarkMode"
                            ValueChanged="OnDarkModeChanged"
-                           Color="Color.Primary"
-                           Size="Size.Small" />
-
+                           Color="Color.Primary" />
             </div>
 
         </MudNavMenu>
@@ -118,6 +117,7 @@
     bool isDarkMode = false;
     bool drawerOpen = false;
     string favoriteWeather = "";
+    public bool IsDarkMode => isDarkMode;
 
     MudTheme _myTheme = new MudTheme()
     {
