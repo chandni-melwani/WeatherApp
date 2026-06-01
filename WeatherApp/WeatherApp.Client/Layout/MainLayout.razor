@@ -28,7 +28,6 @@
                Anchor="Anchor.End"
                Elevation="2"
                Variant="DrawerVariant.Temporary"
-               ClipMode="DrawerClipMode.Always"
                Width="320px">
 
         <MudDrawerHeader Style="padding: 24px;">
@@ -49,19 +48,18 @@
 
                 <div class="px-4 py-2">
                     <MudText Typo="Typo.caption" Style="color:gray;">Favorite Weather</MudText>
-                    <MudSelect T="string"
-                               Value="favoriteWeather"
-                               Variant="Variant.Outlined"
-                               Dense="true"
-                               Class="mt-1"
-                               ValueChanged="SaveFavoriteWeather">
-                        <MudSelectItem Value="@("Clear")">☀️ Clear</MudSelectItem>
-                        <MudSelectItem Value="@("Clouds")">☁️ Clouds</MudSelectItem>
-                        <MudSelectItem Value="@("Rain")">🌧 Rain</MudSelectItem>
-                        <MudSelectItem Value="@("Thunderstorm")">⛈ Thunderstorm</MudSelectItem>
-                        <MudSelectItem Value="@("Snow")">❄️ Snow</MudSelectItem>
-                        <MudSelectItem Value="@("Mist")">🌫 Mist</MudSelectItem>
-                    </MudSelect>
+                    <div class="mt-2 d-flex flex-wrap gap-2">
+                        @foreach (var condition in new[] { "Clear", "Clouds", "Rain", "Thunderstorm", "Snow", "Mist" })
+                        {
+                            <MudChip T="string"
+                                     Color="@(favoriteWeather == condition ? Color.Primary : Color.Default)"
+                                     Variant="@(favoriteWeather == condition ? Variant.Filled : Variant.Outlined)"
+                                     OnClick="() => SaveFavoriteWeather(condition)"
+                                     Size="Size.Small">
+                                @WeatherHelper.GetWeatherIcon(condition) @condition
+                            </MudChip>
+                        }
+                    </div>
                 </div>
 
                 <MudDivider Class="my-2" />
@@ -129,6 +127,15 @@
             Background = "#F0F4F8",
             Surface = "#FFFFFF",
             TextPrimary = "#1A237E",
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Primary = "#1565C0",
+            Secondary = "#FF8F00",
+            AppbarBackground = "#0D47A1",
+            Background = "#1a1a2e",
+            Surface = "#16213e",
+            TextPrimary = "#E0E0E0",
         }
     };
 
