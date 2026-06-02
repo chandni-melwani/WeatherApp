@@ -286,14 +286,26 @@
 
         return weather.Condition switch
         {
-            "Clear" => "linear-gradient(180deg, #FFF9C4 0%, #FFE082 50%, #FFB300 100%)",
+            "Clear" => isDarkMode
+                ? "linear-gradient(180deg, #1B2735 0%, #2C5364 100%)"
+                : "linear-gradient(180deg, #FFF9C4 0%, #FFE082 50%, #FFB300 100%)",
+
+            "Snow" => isDarkMode
+                ? "linear-gradient(180deg, #37474F 0%, #546E7A 100%)"
+                : "linear-gradient(180deg, #E3F2FD 0%, #FFFFFF 100%)",
+
+            "Mist" => isDarkMode
+                ? "linear-gradient(180deg, #263238 0%, #455A64 100%)"
+                : "linear-gradient(180deg, #CFD8DC 0%, #90A4AE 100%)",
+
             "Clouds" => isDarkMode
-                           ? "linear-gradient(180deg, #2c3e50 0%, #3d5166 100%)"
-                           : "linear-gradient(180deg, #ECEFF1 0%, #B0BEC5 100%)",
+                ? "linear-gradient(180deg, #2c3e50 0%, #3d5166 100%)"
+                : "linear-gradient(180deg, #ECEFF1 0%, #B0BEC5 100%)",
+
             "Rain" => "linear-gradient(180deg, #1A237E 0%, #1565C0 100%)",
+
             "Thunderstorm" => "linear-gradient(180deg, #1A0A2E 0%, #4A148C 100%)",
-            "Snow" => "linear-gradient(180deg, #E3F2FD 0%, #FFFFFF 100%)",
-            "Mist" => "linear-gradient(180deg, #CFD8DC 0%, #90A4AE 100%)",
+
             _ => "#F0F4F8"
         };
     }
