@@ -20,7 +20,9 @@
                     <MudText Typo="Typo.h4" Class="mt-3" Style="font-weight:700;">
                         Weather App
                     </MudText>
-                    <MudText Typo="Typo.body1" Class="mt-2" Style="color:#546E7A;">
+                    <MudText Typo="Typo.body1"
+                             Class="mt-2"
+                             Style="@($"color:{(isDarkMode ? "#FFFFFF" : "#546E7A")};")">
                         Enter a place name below to get started
                     </MudText>
                 </div>
@@ -66,7 +68,9 @@
 
             @if (forecasts.Count > 0)
             {
-                <MudText Typo="Typo.h5" Class="mt-6 mb-4">
+                <MudText Typo="Typo.h5"
+                         Class="mt-6 mb-4"
+                         Style="color:white;">
                     5-Day Forecast
                 </MudText>
             }
@@ -137,7 +141,7 @@
     List<ForecastModel> forecasts = new();
     List<string> searchHistory = new();
     List<string> favoriteCities = new();
-    bool isDarkMode => AppLayout?.IsDarkMode ?? false;
+    bool isDarkMode => true;
 
     [CascadingParameter]
     public MainLayout? AppLayout { get; set; }
@@ -294,7 +298,7 @@
                 ? "linear-gradient(180deg, #37474F 0%, #546E7A 100%)"
                 : "linear-gradient(180deg, #E3F2FD 0%, #FFFFFF 100%)",
 
-            "Mist" => isDarkMode
+            "Mist" or "Haze" => isDarkMode
                 ? "linear-gradient(180deg, #263238 0%, #455A64 100%)"
                 : "linear-gradient(180deg, #CFD8DC 0%, #90A4AE 100%)",
 
@@ -306,7 +310,9 @@
 
             "Thunderstorm" => "linear-gradient(180deg, #1A0A2E 0%, #4A148C 100%)",
 
-            _ => "#F0F4F8"
+            _ => isDarkMode
+                ? "linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)"
+                : "#F0F4F8"
         };
     }
 

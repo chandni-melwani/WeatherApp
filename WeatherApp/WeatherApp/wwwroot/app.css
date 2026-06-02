@@ -70,3 +70,23 @@ h1:focus {
 .mud-list {
     z-index: 9999 !important;
 }
+
+.mud-input-label {
+    color: white !important;
+}
+
+.mud-input {
+    color: white !important;
+}
+
+.mud-theme-dark .mud-typography {
+    color: white !important;
+}
+
+.mud-theme-dark .mud-input-label {
+    color: white !important;
+}
+
+.mud-theme-dark .mud-input {
+    color: white !important;
+}

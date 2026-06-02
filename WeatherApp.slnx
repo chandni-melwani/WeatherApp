@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Dockerfile" />
+  </Folder>
   <Project Path="WeatherApp/WeatherApp.Client/WeatherApp.Client.csproj" />
   <Project Path="WeatherApp/WeatherApp/WeatherApp.csproj" />
 </Solution>
