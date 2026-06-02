@@ -1,12 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Copy the entire solution and all project folders into the container
+# Copy everything from the repository root into the container
 COPY . .
 
-# Restore and publish pointing specifically to the subfolder path
-RUN dotnet restore "WeatherApp/WeatherApp.csproj"
-RUN dotnet publish "WeatherApp/WeatherApp.csproj" -c Release -o /app/publish
+# Point explicitly through the middle WeatherApp folder to find the projects
+RUN dotnet restore "WeatherApp/WeatherApp/WeatherApp.csproj"
+RUN dotnet publish "WeatherApp/WeatherApp/WeatherApp.csproj" -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
