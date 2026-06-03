@@ -36,6 +36,7 @@
 
             <MudTextField Label="Email"
                           @bind-Value="email"
+                          Placeholder="Enter your email"
                           Variant="Variant.Outlined"
                           Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Email"
@@ -44,6 +45,7 @@
 
             <MudTextField Label="Password"
                           @bind-Value="password"
+                          Placeholder="Enter your password"
                           Variant="Variant.Outlined"
                           InputType="@(showPassword ? InputType.Text : InputType.Password)"
                           Adornment="Adornment.End"

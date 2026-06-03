@@ -16,7 +16,7 @@
             @if (weather == null && !isLoading)
             {
                 <div class="text-center py-6">
-                    <MudText Style="font-size:72px; line-height:1;">🌤</MudText>
+                    <MudText Style="font-size:72px; line-height:1; color:transparent; text-shadow: 0 0 0 #FFB300;">🌤</MudText>
                     <MudText Typo="Typo.h4" Class="mt-3" Style="font-weight:700;">
                         Weather App
                     </MudText>
@@ -68,9 +68,7 @@
 
             @if (forecasts.Count > 0)
             {
-                <MudText Typo="Typo.h5"
-                         Class="mt-6 mb-4"
-                         Style="color:white;">
+                <MudText Typo="Typo.h5" Class="mt-6 mb-4">
                     5-Day Forecast
                 </MudText>
             }
@@ -141,7 +139,7 @@
     List<ForecastModel> forecasts = new();
     List<string> searchHistory = new();
     List<string> favoriteCities = new();
-    bool isDarkMode => true;
+    bool isDarkMode => AppLayout?.IsDarkMode ?? false;
 
     [CascadingParameter]
     public MainLayout? AppLayout { get; set; }

@@ -5,7 +5,7 @@
 @if (Weather != null)
 {
     <MudPaper Elevation="4"
-              Class="pa-6 rounded-xl"
+              Class="pa-6 rounded-xl weather-card"
               Style=@($"background: {WeatherHelper.GetGradient(Weather.Condition)}; color:white; border-radius:16px; transition:all 0.3s ease;")>
 
         <div class="d-flex justify-space-between align-center mb-2">

@@ -5,7 +5,7 @@
 @if (Forecast != null)
 {
     <MudPaper Elevation="2"
-              Class="pa-4 rounded-xl"
+              Class="pa-4 rounded-xl weather-card"
               Style=@($"background:{WeatherHelper.GetGradient(Forecast.Condition)}; color:white; border-radius:16px; transition:all 0.3s ease; height:100%;")>
 
         <MudText Typo="Typo.caption" Style="color:rgba(255,255,255,0.75);">
